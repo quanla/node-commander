@@ -1,12 +1,16 @@
 .commander-panel {
   flex 0 0 50%;
   height 100%;
+  border 2px solid transparent;
 
   & > .file {
-
+    &.focused {
+      background blue;
+      color white;
+    }
   }
 
-  &:focus {
-
+  &.focused {
+    border-color blue;
   }
 }

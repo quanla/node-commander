@@ -1,5 +1,14 @@
 
 const Cols = {
+    indexOf(col, fn) {
+        for (let i = 0; i < col.length; i++) {
+            let e = col[i];
+            if (fn(e)) {
+                return i;
+            }
+        }
+        return -1;
+    },
     reduce(col, iter, initValue) {
         let value = initValue;
         for (let i = 0; i < col.length; i++) {

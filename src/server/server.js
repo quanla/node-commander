@@ -1,7 +1,7 @@
 const express = require("express");
 const open = require("open");
 const bodyParser = require("body-parser");
-const {apiHub} = require("./api-hub/api-hub");
+const apiHub = require("./api-hub/api-hub");
 
 var app = express();
 
@@ -10,7 +10,9 @@ app.use(express.static(__dirname));
 app.use("/data", express.static(__dirname + "/../mock-data"));
 
 app.use("/api", bodyParser.json());
-app.use("/api", apiHub);
+
+let router = new express.Router();
+app.use("/api", apiHub(router));
 
 let port = 6572;
 app.listen(port, () => {
