@@ -29,6 +29,9 @@ export class CommanderPanel extends GmComponent {
                     this.setState({focusedFile: this.state.files[index + 1].fileName});
                 }
             },
+            13: () => {
+                this.changeFolder(`${this.state.path}/${this.state.focusedFile}`);
+            },
         };
     }
 

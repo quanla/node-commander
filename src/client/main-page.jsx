@@ -22,10 +22,13 @@ export class MainPage extends GmComponent {
 
     handleKeyDown(e) {
 
-        let handlerMaps = [this.state.focusedPanel.keyHandlers, this.keyHandlers];
+        let handlerMaps = [this.state.focusedPanel == null ? null : this.state.focusedPanel.keyHandlers, this.keyHandlers];
 
         for (let i = 0; i < handlerMaps.length; i++) {
             let handlerMap = handlerMaps[i];
+            if (handlerMap == null ) {
+                continue;
+            }
 
             let handler = handlerMap[e.keyCode];
             if (handler) {
