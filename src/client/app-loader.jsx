@@ -1,4 +1,5 @@
 // import React from "react";
+import {MainPage} from "./main-page";
 // import {VenueEditorPage} from "./venue-editor-page";
 // import {keys} from "../common/keys/keys";
 // import {devActions} from "../common/dev-mode/dev-actions";
@@ -16,7 +17,7 @@ window.ReactDOM = ReactDOM;
 ReactDOM.render(
     (
         <div className="node-commander">
-            He he he
+            <MainPage/>
         </div>
     ),
     document.getElementById("app-container")

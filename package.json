@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"node server/server.js\" \"gulp compile-stylus:watch\"",
+    "dev": "concurrently \"node src/server/server.js\" \"gulp compile-stylus:watch\"",
     "webpack": "webpack -w"
   },
   "author": "",
