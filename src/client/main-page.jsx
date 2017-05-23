@@ -47,16 +47,19 @@ export class MainPage extends GmComponent {
             <div className="main-page" tabIndex={0}
                  onKeyDown={(e) => this.handleKeyDown(e)}
             >
-                <CommanderPanel
-                    ref={(panel)=> this.leftPanel = panel}
-                    focused={focusedPanel==this.leftPanel}
-                    onClick={() => this.setState({focusedPanel: this.leftPanel})}
-                />
-                <CommanderPanel
-                    ref={(panel)=> this.rightPanel = panel}
-                    focused={focusedPanel==this.rightPanel}
-                    onClick={() => this.setState({focusedPanel: this.rightPanel})}
-                />
+                <div className="panels">
+                    <CommanderPanel
+                        ref={(panel)=> this.leftPanel = panel}
+                        focused={focusedPanel==this.leftPanel}
+                        onClick={() => this.setState({focusedPanel: this.leftPanel})}
+                    />
+                    <CommanderPanel
+                        ref={(panel)=> this.rightPanel = panel}
+                        focused={focusedPanel==this.rightPanel}
+                        onClick={() => this.setState({focusedPanel: this.rightPanel})}
+                    />
+                </div>
+
             </div>
         );
     }

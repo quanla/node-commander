@@ -30,7 +30,13 @@ export class CommanderPanel extends GmComponent {
                 }
             },
             13: () => {
-                this.changeFolder(`${this.state.path}/${this.state.focusedFile}`);
+                let file = Cols.find(this.state.files, (f) => f.fileName == this.state.focusedFile);
+                // console.log(file);
+                if (file.directory) {
+                    this.changeFolder(`${this.state.path}/${this.state.focusedFile}`);
+                } else {
+                    fileApi.openFile(`${this.state.path}/${this.state.focusedFile}`);
+                }
             },
         };
     }
