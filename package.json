@@ -4,8 +4,37 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently \"node server/server.js\" \"gulp compile-stylus:watch\"",
+    "webpack": "webpack -w"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "classnames": "^2.2.5",
+    "express": "^4.15.3",
+    "open": "0.0.5"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-plugin-module-alias": "^1.6.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-runtime": "^6.23.0",
+    "chokidar": "^1.6.1",
+    "flow-bin": "^0.45.0",
+    "gulp": "^3.9.1",
+    "gulp-inject": "^4.2.0",
+    "gulp-sort": "^2.0.0",
+    "gulp-stylus": "^2.6.0",
+    "npm-install-webpack-plugin": "^4.0.4",
+    "webpack": "^2.2.1"
+  }
 }
