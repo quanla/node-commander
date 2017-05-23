@@ -6,7 +6,7 @@ var compileStyl = function() {
     return new Promise((resolve, reject)=> {
 
         var stylus = require("gulp-stylus");
-        gulp.src("./react/common/style/style.styl")
+        gulp.src("./src/client/common/style/style.styl")
             .pipe(stylus({
                 compress: true
             }))
@@ -22,9 +22,9 @@ var compileStyl = function() {
 var inject_ = function() {
     return new Promise((resolve, reject)=> {
 
-        var target = gulp.src(path.join(__dirname, '../react/common/style/style.styl') );
+        var target = gulp.src(path.join(__dirname, '../src/client/common/style/style.styl') );
         var sort = require('gulp-sort');
-        var sources = gulp.src([path.join(__dirname, '../react/**/*.styl')], {read: false}).pipe(sort());
+        var sources = gulp.src([path.join(__dirname, '../src/client/**/*.styl')], {read: false}).pipe(sort());
 
         var inject = require("gulp-inject");
         target
@@ -32,13 +32,13 @@ var inject_ = function() {
                 starttag: '// inject:all',
                 endtag: '// endinject',
                 transform: function (filepath, file, i, length) {
-                    if (filepath.startsWith("/react/common/style")) {
+                    if (filepath.startsWith("/src/client/common/style")) {
                         return null;
                     }
-                    return `@import "../..${filepath.replace(new RegExp("/react", "g"), "")}";`;
+                    return `@import "../..${filepath.replace(new RegExp("/src/client", "g"), "")}";`;
                 }
             }))
-            .pipe(gulp.dest(path.join(__dirname, '../react/common/style')))
+            .pipe(gulp.dest(path.join(__dirname, '../src/client/common/style')))
             .on("end", ()=>{
                 console.log("Inject stylus done");
                 resolve();
@@ -50,7 +50,7 @@ var inject_ = function() {
 module.exports = {
     watch: ()=> {
         chokidar
-            .watch([path.join(__dirname, '../react/**/*.styl')], {
+            .watch([path.join(__dirname, '../src/client/**/*.styl')], {
                 ignoreInitial: true
             })
             .on('add', function(event, path) {
