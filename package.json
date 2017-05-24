@@ -2,9 +2,10 @@
   "name": "node-commander",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/nw/nw-loader.html",
   "scripts": {
     "dev": "concurrently \"node src/server/server.js\" \"gulp compile-stylus:watch\"",
+    "nw": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
     "webpack": "webpack -w"
   },
   "author": "",
