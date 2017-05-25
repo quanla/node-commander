@@ -16,22 +16,37 @@ export class CommanderPanel extends GmComponent {
         setTimeout(() => this.changeFolder("/Users/quanle/Downloads/A History of Violence (2005) [1080p]"));
 
         this.keyHandlers = {
-            8: () => this.changeFolder(this.state.path.replace(new RegExp("\\/[^/]+$"), "")),
+            8: () => this.goUpFolder(),
             38: () => {
-                let index = Cols.indexOf(this.state.files, (f) => f.fileName == this.state.focusedFile);
+                const {files, focusedFile, path} = this.state;
+
+                let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
                 if (index > 0) {
-                    this.setState({focusedFile: this.state.files[index - 1].fileName});
+                    this.setState({focusedFile: files[index - 1].fileName});
+                } else if (path && path.indexOf("/") > -1) {
+                    this.setState({focusedFile: ".."})
                 }
             },
             40: () => {
-                let index = Cols.indexOf(this.state.files, (f) => f.fileName == this.state.focusedFile);
-                if (index < this.state.files.length - 1) {
-                    this.setState({focusedFile: this.state.files[index + 1].fileName});
+                const {files, focusedFile} = this.state;
+
+                if (focusedFile == "..") {
+                    if (files.length) {
+                        this.setState({focusedFile: files[0].fileName});
+                    }
+                    return;
+                }
+                let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
+                if (index < files.length - 1) {
+                    this.setState({focusedFile: files[index + 1].fileName});
                 }
             },
             13: () => {
+                if (this.state.focusedFile == "..") {
+                    this.goUpFolder();
+                    return;
+                }
                 let file = Cols.find(this.state.files, (f) => f.fileName == this.state.focusedFile);
-                // console.log(file);
                 if (file.directory) {
                     this.changeFolder(`${this.state.path}/${this.state.focusedFile}`);
                 } else {
@@ -41,6 +56,10 @@ export class CommanderPanel extends GmComponent {
         };
     }
 
+    goUpFolder() {
+        this.changeFolder(this.state.path.replace(new RegExp("\\/[^/]+$"), ""));
+    }
+
     changeFolder(path) {
         this.setState({path, files: null, focusedFile: null});
         fileApi.getFiles(path).then((files) => {
@@ -48,15 +67,36 @@ export class CommanderPanel extends GmComponent {
         });
     }
 
+    icon(file) {
+        return file.directory ? "/src/assets/icons/Folder-icon.png" : "/src/assets/icons/file-icon.png";
+    }
+
     render() {
-        const {files, focusedFile} = this.state;
+        const {files, focusedFile, path} = this.state;
         const {focused, onClick} = this.props;
         return (
             <div className={classnames("commander-panel", {focused})}
                  onClick={onClick}
             >
+                {path && path.indexOf("/") > -1 && (
+                    <div
+                        className={classnames("file", {focused : focusedFile == ".."})}
+                        onClick={() => this.setState({focusedFile: ".."})}
+                        onDoubleClick={() => this.goUpFolder()}
+                    >
+                        ..
+                    </div>
+                )}
+
                 {files && files.map((file) => (
-                    <div className={classnames("file", {focused : focusedFile == file.fileName})} key={file.fileName}>
+                    <div
+                        className={classnames("file", {focused : focusedFile == file.fileName})}
+                        key={file.fileName}
+                        onClick={() => this.setState({focusedFile: file.fileName})}
+                        onDoubleClick={() => fileApi.openFile(`${path}/${file.fileName}`)}
+                    >
+                        <img className="icon" src={this.icon(file)}/>
+
                         {file.fileName}
                     </div>
                 ))}

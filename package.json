@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/nw/nw-loader.html",
   "scripts": {
-    "dev": "concurrently \"node src/server/server.js\" \"gulp compile-stylus:watch\"",
+    "web-dev": "concurrently \"node src/server/server.js\" \"gulp compile-stylus:watch\"",
     "nw": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
     "webpack": "webpack -w"
   },

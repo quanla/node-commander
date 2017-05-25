@@ -4,6 +4,21 @@
   border 2px solid transparent;
 
   & > .file {
+    font-size: 12px;
+    font-weight 500;
+    cursor default;
+    no-select();
+    padding 0 0 0 33px;
+    position relative;
+    ellipsis();
+
+    & > .icon {
+      position: absolute;
+      top: 0;
+      left: 10px;
+      height 14px;
+    }
+
     &.focused {
       background blue;
       color white;
