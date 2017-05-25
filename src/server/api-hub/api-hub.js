@@ -13,6 +13,11 @@ exports.apiHub = (router) => {
     router.post("/file/list", (req, res) => {
         let path = req.body.path;
         fs.readdir(path, (err, files) => {
+            if (err) {
+                console.log(err);
+                res.end();
+                return;
+            }
             Promise.all(files.map((fileName) => getStats(`${path}/${fileName}`).then((stats) => Object.assign(stats, {fileName})))).then((files) => {
                 res.json(files);
             });

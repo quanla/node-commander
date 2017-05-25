@@ -1,6 +1,8 @@
 import classnames from "classnames";
 import {GmComponent} from "./common/gm-component";
 import {CommanderPanel} from "./commander-panel/commander-panel";
+import {CmdBox} from "./cmd-box/cmd-box";
+import {htmlKeys, keys} from "./common/keys/keys";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -8,58 +10,104 @@ export class MainPage extends GmComponent {
 
         this.state = {
             focusedPanel: null,
+            focusing: "panels",
         };
 
         this.onMount(() => {
-            this.setState({focusedPanel: this.leftPanel});
+            this.setState({focusedPanel: this.panels["left"]});
         });
 
+        this.panels = {left: null, right: null};
 
-        this.keyHandlers = {
-            9: () => this.setState({focusedPanel: this.state.focusedPanel == this.leftPanel ? this.rightPanel : this.leftPanel}),
-        };
+        this.keyHandlers = [
+            {key: keys.TAB, action: () => {
+                this.setState({focusedPanel: this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"]});
+            }}
+        ];
     }
 
     handleKeyDown(e) {
 
-        let handlerMaps = [this.state.focusedPanel == null ? null : this.state.focusedPanel.keyHandlers, this.keyHandlers];
+        const {focusing, focusedPanel} = this.state;
 
-        for (let i = 0; i < handlerMaps.length; i++) {
-            let handlerMap = handlerMaps[i];
-            if (handlerMap == null ) {
+        let handlerLists = [
+            focusing == "panels" ? (
+                focusedPanel == null ? null : focusedPanel.keyHandlers
+            ) : (
+                this.cmdBox.keyHandlers
+            ),
+            this.keyHandlers
+        ];
+
+        let keyStroke = htmlKeys.translate(e);
+
+        function findHandler(keyStroke, handlerList) {
+            for (let i = 0; i < handlerList.length; i++) {
+                let handler = handlerList[i];
+                if (keys.match(keyStroke, handler.key)) {
+                    return handler;
+                }
+            }
+        }
+
+        for (let i = 0; i < handlerLists.length; i++) {
+            let handlerList = handlerLists[i];
+
+            if (handlerList == null ) {
                 continue;
             }
 
-            let handler = handlerMap[e.keyCode];
+            let handler = findHandler(keyStroke, handlerList);
             if (handler) {
-                handler();
+                handler.action();
                 e.preventDefault();
                 e.stopPropagation();
                 return;
             }
         }
-        console.log(e.keyCode);
+        // console.log(e.keyCode);
+    }
+
+    setCmd(cmd) {
+        this.cmdBox.setCmd(cmd);
+        this.cmdBox.focus();
+        this.setState({focusing: "cmdBox"});
+    }
+
+    focusPanels() {
+        ReactDOM.findDOMNode(this).focus();
+        this.setState({focusing: "panels"});
     }
 
     render() {
         const {focusedPanel} = this.state;
+
+        const createCommanderPanel = (id) => {
+            return (
+                <CommanderPanel
+                    ref={(panel)=> this.panels[id] = panel}
+                    focused={focusedPanel == this.panels[id]}
+                    onMouseDown={() => this.setState({focusedPanel: this.panels[id]})}
+                    actions={{
+                        setCmd: (cmd) => {
+                            this.setCmd(cmd);
+                        }
+                    }}
+                />
+            );
+        }
         return (
             <div className="main-page" tabIndex={0}
                  onKeyDown={(e) => this.handleKeyDown(e)}
             >
                 <div className="panels">
-                    <CommanderPanel
-                        ref={(panel)=> this.leftPanel = panel}
-                        focused={focusedPanel==this.leftPanel}
-                        onClick={() => this.setState({focusedPanel: this.leftPanel})}
-                    />
-                    <CommanderPanel
-                        ref={(panel)=> this.rightPanel = panel}
-                        focused={focusedPanel==this.rightPanel}
-                        onClick={() => this.setState({focusedPanel: this.rightPanel})}
-                    />
+                    {createCommanderPanel("left")}
+                    {createCommanderPanel("right")}
                 </div>
 
+                <CmdBox ref={(comp) => this.cmdBox = comp}
+                        onRequestBlur={() => this.focusPanels()}
+                />
             </div>
         );
     }

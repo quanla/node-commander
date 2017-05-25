@@ -2,6 +2,8 @@ import classnames from "classnames";
 import {GmComponent} from "../common/gm-component";
 import {fileApi} from "../api/file-api";
 import {Cols} from "../common/utils/cols";
+import {keys} from "../common/keys/keys";
+import {KeyCombo} from "../common/keys/key-combo";
 
 export class CommanderPanel extends GmComponent {
     constructor(props, context) {
@@ -15,19 +17,21 @@ export class CommanderPanel extends GmComponent {
 
         setTimeout(() => this.changeFolder("/Users/quanle/Downloads/A History of Violence (2005) [1080p]"));
 
-        this.keyHandlers = {
-            8: () => this.goUpFolder(),
-            38: () => {
+        this.keyHandlers = [
+            { key: keys.BACKSPACE, action: () => {
+                this.goUpFolder()
+            }},
+            { key: keys.UP, action: () => {
                 const {files, focusedFile, path} = this.state;
 
                 let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
                 if (index > 0) {
                     this.setState({focusedFile: files[index - 1].fileName});
-                } else if (path && path.indexOf("/") > -1) {
+                } else if (path != "/") {
                     this.setState({focusedFile: ".."})
                 }
-            },
-            40: () => {
+            }},
+            { key: keys.DOWN, action: () => {
                 const {files, focusedFile} = this.state;
 
                 if (focusedFile == "..") {
@@ -40,30 +44,38 @@ export class CommanderPanel extends GmComponent {
                 if (index < files.length - 1) {
                     this.setState({focusedFile: files[index + 1].fileName});
                 }
-            },
-            13: () => {
+            }},
+            { key: KeyCombo.compileCombo("shift+cmd+enter"), action: () => {
+                this.props.actions.setCmd(`${this.state.path}/${this.state.focusedFile}`);
+            }},
+            { key: keys.ENTER, action: () => {
                 if (this.state.focusedFile == "..") {
                     this.goUpFolder();
                     return;
                 }
                 let file = Cols.find(this.state.files, (f) => f.fileName == this.state.focusedFile);
-                if (file.directory) {
-                    this.changeFolder(`${this.state.path}/${this.state.focusedFile}`);
-                } else {
-                    fileApi.openFile(`${this.state.path}/${this.state.focusedFile}`);
-                }
-            },
-        };
+                this.exec(file);
+            }},
+        ];
+    }
+
+    exec(file) {
+        if (file.directory) {
+            this.changeFolder(`${this.state.path == "/" ? "" : this.state.path}/${file.fileName}`);
+        } else {
+            fileApi.openFile(`${this.state.path == "/" ? "" : this.state.path}/${file.fileName}`);
+        }
     }
 
     goUpFolder() {
-        this.changeFolder(this.state.path.replace(new RegExp("\\/[^/]+$"), ""));
+        let newPath = this.state.path.replace(new RegExp("\\/[^/]+$"), "");
+        this.changeFolder(newPath.length == 0 ? "/" : newPath);
     }
 
     changeFolder(path) {
         this.setState({path, files: null, focusedFile: null});
         fileApi.getFiles(path).then((files) => {
-            this.setState({files, focusedFile: files.length == 0 ? null :  files[0].fileName});
+            this.setState({files, focusedFile: path != "/" ? ".." : files[0].fileName});
         });
     }
 
@@ -73,33 +85,38 @@ export class CommanderPanel extends GmComponent {
 
     render() {
         const {files, focusedFile, path} = this.state;
-        const {focused, onClick} = this.props;
+        const {focused, onMouseDown} = this.props;
         return (
             <div className={classnames("commander-panel", {focused})}
-                 onClick={onClick}
+                 onMouseDown={onMouseDown}
             >
-                {path && path.indexOf("/") > -1 && (
-                    <div
-                        className={classnames("file", {focused : focusedFile == ".."})}
-                        onClick={() => this.setState({focusedFile: ".."})}
-                        onDoubleClick={() => this.goUpFolder()}
-                    >
-                        ..
-                    </div>
-                )}
+                <div className="path">
+                    {path}
+                </div>
+                <div className="files">
+                    {path != "/" && (
+                        <div
+                            className={classnames("file", {focused : focusedFile == ".."})}
+                            onMouseDown={() => this.setState({focusedFile: ".."})}
+                            onDoubleClick={() => this.goUpFolder()}
+                        >
+                            ..
+                        </div>
+                    )}
 
-                {files && files.map((file) => (
-                    <div
-                        className={classnames("file", {focused : focusedFile == file.fileName})}
-                        key={file.fileName}
-                        onClick={() => this.setState({focusedFile: file.fileName})}
-                        onDoubleClick={() => fileApi.openFile(`${path}/${file.fileName}`)}
-                    >
-                        <img className="icon" src={this.icon(file)}/>
+                    {files && files.map((file) => (
+                        <div
+                            className={classnames("file", {focused : focusedFile == file.fileName})}
+                            key={file.fileName}
+                            onMouseDown={() => this.setState({focusedFile: file.fileName})}
+                            onDoubleClick={() => this.exec(file)}
+                        >
+                            <img className="icon" src={this.icon(file)}/>
 
-                        {file.fileName}
-                    </div>
-                ))}
+                            {file.fileName}
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }

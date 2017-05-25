@@ -1,31 +1,49 @@
 .commander-panel {
   flex 0 0 50%;
   height 100%;
-  border 2px solid transparent;
+  //width 100%;
+  display flex;
+  overflow hidden;
+  flex-direction column;
+  //border 2px solid transparent;
 
-  & > .file {
+  & > .path {
+    flex 0 0 auto;
+    padding 0 0 0 10px;
     font-size: 12px;
-    font-weight 500;
-    cursor default;
-    no-select();
-    padding 0 0 0 33px;
-    position relative;
-    ellipsis();
+    border-bottom 1px solid #c9c9c9;
+  }
 
-    & > .icon {
-      position: absolute;
-      top: 0;
-      left: 10px;
-      height 14px;
-    }
+  & > .files {
+    flex 1 1;
+    height 100%;
+    width 100%;
+    overflow: auto;
+    & > .file {
+      font-size: 12px;
+      font-weight 500;
+      cursor default;
+      no-select();
+      padding 0 0 0 33px;
+      position relative;
+      ellipsis();
+      width 100%;
 
-    &.focused {
-      background blue;
-      color white;
+      & > .icon {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        height 14px;
+      }
+
     }
   }
 
   &.focused {
-    border-color blue;
+    //border-color blue;
+    & > .files > .file.focused {
+      background blue;
+      color white;
+    }
   }
 }
