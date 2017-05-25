@@ -16,7 +16,10 @@ const htmlKeysMap = {
     40: "DOWN",
     13: "ENTER",
     9: "TAB",
+    34: "PAGE_DOWN",
+    33: "PAGE_UP",
 };
+
 const htmlKeys = {
 
     translate(e) {
@@ -47,6 +50,8 @@ const keys = {
     DOWN: KeyCombo.compileCombo("DOWN"),
     ENTER: KeyCombo.compileCombo("ENTER"),
     TAB: KeyCombo.compileCombo("TAB"),
+    PAGE_DOWN: KeyCombo.compileCombo("PAGE_DOWN"),
+    PAGE_UP: KeyCombo.compileCombo("PAGE_UP"),
 
     match,
 };

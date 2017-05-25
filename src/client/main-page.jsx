@@ -24,10 +24,6 @@ export class MainPage extends GmComponent {
                 this.setState({focusedPanel: this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"]});
             }}
         ];
-
-        $(window).focus(() => {
-            console.log(111);
-        });
     }
 
     handleKeyDown(e) {
@@ -69,7 +65,7 @@ export class MainPage extends GmComponent {
                 return;
             }
         }
-        // console.log(e.keyCode);
+        console.log(e.keyCode);
     }
 
     setCmd(cmd) {

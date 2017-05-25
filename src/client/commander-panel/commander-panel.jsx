@@ -15,7 +15,7 @@ export class CommanderPanel extends GmComponent {
             focusedFile: null,
         };
 
-        setTimeout(() => this.changeFolder("/Users/quanle/Downloads/A History of Violence (2005) [1080p]"));
+        setTimeout(() => this.changeFolder("/Users/quanle/Downloads"));
 
         this.keyHandlers = [
             { key: keys.BACKSPACE, action: () => {
@@ -26,9 +26,9 @@ export class CommanderPanel extends GmComponent {
 
                 let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
                 if (index > 0) {
-                    this.setState({focusedFile: files[index - 1].fileName});
+                    this.focusFile(files[index - 1].fileName);
                 } else if (path != "/") {
-                    this.setState({focusedFile: ".."})
+                    this.focusFile("..");
                 }
             }},
             { key: keys.DOWN, action: () => {
@@ -42,7 +42,7 @@ export class CommanderPanel extends GmComponent {
                 }
                 let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
                 if (index < files.length - 1) {
-                    this.setState({focusedFile: files[index + 1].fileName});
+                    this.focusFile(files[index + 1].fileName);
                 }
             }},
             { key: KeyCombo.compileCombo("shift+cmd+enter"), action: () => {
@@ -53,10 +53,69 @@ export class CommanderPanel extends GmComponent {
                     this.goUpFolder();
                     return;
                 }
-                let file = Cols.find(this.state.files, (f) => f.fileName == this.state.focusedFile);
+                let file = Cols.find(this.sortedFiles(), (f) => f.fileName == this.state.focusedFile);
                 this.exec(file);
             }},
+            { key: keys.PAGE_UP, action: () => {
+                this.pageUp();
+            }},
+            { key: keys.PAGE_DOWN, action: () => {
+                let sortedFiles = this.sortedFiles();
+                let index = Cols.indexOf(sortedFiles, (f) => f.fileName == this.state.focusedFile);
+                index = Math.min(index + this.getPageSize(), this.state.files.length-1);
+
+                this.focusFile(sortedFiles[index].fileName);
+            }},
+            { key: KeyCombo.compileCombo("cmd+up"), action: () => {
+                let sortedFiles = this.sortedFiles();
+
+                this.focusFile(this.state.path == "/" ? sortedFiles[0].fileName : "..");
+            }},
+            { key: KeyCombo.compileCombo("cmd+down"), action: () => {
+                let sortedFiles = this.sortedFiles();
+
+                this.focusFile(Cols.last(sortedFiles).fileName);
+            }},
         ];
+    }
+
+    getPageSize() {
+
+        let filesPanel = ReactDOM.findDOMNode(this).querySelector(".files");
+        let containerHeight = filesPanel.getBoundingClientRect().height;
+
+        let fileHeight = filesPanel.querySelector(".file").getBoundingClientRect().height;
+
+        return Math.floor(containerHeight / fileHeight);
+    }
+
+    pageUp() {
+
+        // let containerBounding = filesPanel.getBoundingClientRect();
+        let sortedFiles = this.sortedFiles();
+        let index = Cols.indexOf(sortedFiles, (f) => f.fileName == this.state.focusedFile);
+        index = Math.max(index - this.getPageSize(), -1);
+
+        if (index == -1) {
+            this.focusFile(this.state.path == "/" ? sortedFiles[0].fileName : "..");
+        } else {
+            this.focusFile(sortedFiles[index].fileName);
+        }
+    }
+
+    focusFile(fileName) {
+        // console.log(ReactDOM.findDOMNode(this).querySelector(".files .file.focused"));
+        this.setState({focusedFile: fileName}, () => {
+            let filesPanel = ReactDOM.findDOMNode(this).querySelector(".files");
+            let containerBounding = filesPanel.getBoundingClientRect();
+            let targetBounding = filesPanel.querySelector(".file.focused").getBoundingClientRect();
+
+            if (targetBounding.top < containerBounding.top) {
+                filesPanel.scrollTop += targetBounding.top - containerBounding.top;
+            } else if (targetBounding.bottom > containerBounding.bottom) {
+                filesPanel.scrollTop += targetBounding.bottom - containerBounding.bottom;
+            }
+        });
     }
 
     exec(file) {
@@ -85,6 +144,10 @@ export class CommanderPanel extends GmComponent {
         return file.directory ? "/src/assets/icons/Folder-icon.png" : "/src/assets/icons/file-icon.png";
     }
 
+    sortedFiles() {
+        return this.state.files;
+    }
+
     render() {
         const {files, focusedFile, path} = this.state;
         const {focused, onMouseDown} = this.props;
@@ -106,7 +169,7 @@ export class CommanderPanel extends GmComponent {
                         </div>
                     )}
 
-                    {files && files.map((file) => (
+                    {files && this.sortedFiles().map((file) => (
                         <div
                             className={classnames("file", {focused : focusedFile == file.fileName})}
                             key={file.fileName}
