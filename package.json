@@ -8,6 +8,15 @@
     "nw": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
     "webpack": "webpack -w"
   },
+  "window": {
+    "title": "Node Commander",
+    "toolbar": true,
+    "frame": true,
+    "width": 1000,
+    "height": 800,
+    "min_width": 400,
+    "min_height": 400
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

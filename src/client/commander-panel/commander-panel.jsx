@@ -68,14 +68,16 @@ export class CommanderPanel extends GmComponent {
     }
 
     goUpFolder() {
-        let newPath = this.state.path.replace(new RegExp("\\/[^/]+$"), "");
-        this.changeFolder(newPath.length == 0 ? "/" : newPath);
+        let regExp = new RegExp("\\/([^/]+)$");
+        let currentFolder = regExp.exec(this.state.path)[1];
+        let newPath = this.state.path.replace(regExp, "");
+        this.changeFolder(newPath.length == 0 ? "/" : newPath, currentFolder);
     }
 
-    changeFolder(path) {
+    changeFolder(path, focused) {
         this.setState({path, files: null, focusedFile: null});
         fileApi.getFiles(path).then((files) => {
-            this.setState({files, focusedFile: path != "/" ? ".." : files[0].fileName});
+            this.setState({files, focusedFile: focused || (path != "/" ? ".." : files[0].fileName)});
         });
     }
 
