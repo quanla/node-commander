@@ -1,15 +1,8 @@
+var MockApi = require("./mock-api.js").MockApi;
+var apiHub = require("../server/api-hub/api-hub.js").apiHub;
 
-module.exports = ({console, React, document, ReactDOM, $, _, window}) => {
-    global.React = React;
-    global.ReactDOM = ReactDOM;
-    global.console = console;
-    // global.document = document;
-    global._ = _;
-    global.$ = $;
-    global.window = window;
+let router = MockApi.createRouter();
 
-    console.log(document.getElementById("app-container"));
+apiHub(router);
 
-    require("../../dist/js/main");
-
-};
+window.API = router.createClient();

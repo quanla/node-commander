@@ -19,14 +19,8 @@
 <script src="../server/assets/vendor/react_15.4.2/react.js"></script>
 <script src="../server/assets/vendor/react_15.4.2/react-dom.js"></script>
 
-<script>
-    console.log(document.getElementById("app-container"));
-    setTimeout(() => {
-        require("./nw-loader")({React, console, document, ReactDOM, $, _, window});
-    }, 0);
-</script>
-
-<!--<script src="/js/main.js"></script>-->
+<script src="./nw-loader.js"></script>
+<script src="../../dist/js/main.js"></script>
 
 </body>
 </html>
