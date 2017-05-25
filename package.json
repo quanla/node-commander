@@ -7,7 +7,7 @@
     "web-dev": "concurrently \"node src/server/server.js\" \"gulp compile-stylus:watch\"",
     "nw": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
     "webpack": "webpack -w",
-    "dist": "build --tasks mac-x64 --mirror https://dl.nwjs.io/ .",
+    "dist": "build --tasks mac-x64,win-x64 --mirror https://dl.nwjs.io/ .",
     "start": "run --x64 --mirror https://dl.nwjs.io/ ."
   },
   "window": {
