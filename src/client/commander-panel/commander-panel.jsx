@@ -149,7 +149,9 @@ export class CommanderPanel extends GmComponent {
         this.setState({path, files: null, focusedFile: null});
         fileApi.getFiles(path).then((files) => {
             this.props.storage.set("dir", path);
-            this.setState({files, focusedFile: focused || (path != "/" ? ".." : files[0].fileName)});
+            this.setState({files}, () => {
+                this.focusFile(focused || (path != "/" ? ".." : files[0].fileName));
+            });
         });
     }
 
