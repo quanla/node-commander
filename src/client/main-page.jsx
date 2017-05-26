@@ -24,10 +24,10 @@ export class MainPage extends GmComponent {
         this.panels = {left: null, right: null};
 
         this.keyHandlers = [
-            {key: keys.TAB, action: () => {
+            {matcher: keys.TAB, action: () => {
                 this.setState({focusedPanel: this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"]});
             }},
-            {key: keys.F5, action: () => {
+            {matcher: keys.F5, action: () => {
                 let fromPanel = this.state.focusedPanel;
                 let toPanel = this.getUnfocusedPanel();
                 let currentFile = fromPanel.getCurrentFile();
@@ -35,14 +35,14 @@ export class MainPage extends GmComponent {
                     this.sync();
                 });
             }},
-            {key: keys.DELETE, action: () => {
+            {matcher: keys.DELETE, action: () => {
                 let fromPanel = this.state.focusedPanel;
                 let currentFile = fromPanel.getCurrentFile();
                 DeleteCmd.del(currentFile, fromPanel.getCurrentDir()).then(() => {
                     this.sync();
                 });
             }},
-            {key: keys.F7, action: () => {
+            {matcher: keys.F7, action: () => {
                 let fromPanel = this.state.focusedPanel;
                 MakeDirCmd.makeDir(fromPanel.getCurrentDir()).then((path) => {
                     if (path) {
@@ -81,7 +81,8 @@ export class MainPage extends GmComponent {
         function findHandler(keyStroke, handlerList) {
             for (let i = 0; i < handlerList.length; i++) {
                 let handler = handlerList[i];
-                if (keys.match(keyStroke, handler.key)) {
+
+                if (handler.matcher(keyStroke)) {
                     return handler;
                 }
             }
@@ -96,7 +97,7 @@ export class MainPage extends GmComponent {
 
             let handler = findHandler(keyStroke, handlerList);
             if (handler) {
-                handler.action();
+                handler.action(keyStroke);
                 e.preventDefault();
                 e.stopPropagation();
                 return;

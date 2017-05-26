@@ -4,6 +4,7 @@ import {fileApi} from "../api/file-api";
 import {Cols} from "../common/utils/cols";
 import {keys} from "../common/keys/keys";
 import {KeyCombo} from "../common/keys/key-combo";
+import {QuickTypeMatcher} from "./quick-type-matcher";
 
 export class CommanderPanel extends GmComponent {
     constructor(props, context) {
@@ -17,11 +18,20 @@ export class CommanderPanel extends GmComponent {
 
         this.getInitDir().then((dir) => this.changeFolder(dir));
 
+        let quickTypeMatcher = QuickTypeMatcher.createQuickTypeMatcher({
+            onChange: (str) => {
+                let file = Cols.find(this.sortedFiles(), (f) => f.fileName.toUpperCase().startsWith(str));
+                if (file != null && file.fileName != this.state.focusedFile) {
+                    this.focusFile(file.fileName);
+                }
+            }
+        });
+
         this.keyHandlers = [
-            { key: keys.BACKSPACE, action: () => {
+            { matcher: keys.BACKSPACE, action: () => {
                 this.goUpFolder()
             }},
-            { key: keys.UP, action: () => {
+            { matcher: keys.UP, action: () => {
                 const {files, focusedFile, path} = this.state;
 
                 let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
@@ -31,7 +41,7 @@ export class CommanderPanel extends GmComponent {
                     this.focusFile("..");
                 }
             }},
-            { key: keys.DOWN, action: () => {
+            { matcher: keys.DOWN, action: () => {
                 const {files, focusedFile} = this.state;
 
                 if (focusedFile == "..") {
@@ -45,35 +55,38 @@ export class CommanderPanel extends GmComponent {
                     this.focusFile(files[index + 1].fileName);
                 }
             }},
-            { key: KeyCombo.compileCombo("shift+cmd+enter"), action: () => {
+            { matcher: keys.matcher("shift+cmd+enter"), action: () => {
                 this.props.actions.setCmd(`${this.state.path}/${this.state.focusedFile}`);
             }},
-            { key: keys.ENTER, action: () => {
+            { matcher: keys.ENTER, action: () => {
                 if (this.state.focusedFile == "..") {
                     this.goUpFolder();
                     return;
                 }
                 this.exec(this.getCurrentFile());
             }},
-            { key: keys.PAGE_UP, action: () => {
+            { matcher: keys.PAGE_UP, action: () => {
                 this.pageUp();
             }},
-            { key: keys.PAGE_DOWN, action: () => {
+            { matcher: keys.PAGE_DOWN, action: () => {
                 let sortedFiles = this.sortedFiles();
                 let index = Cols.indexOf(sortedFiles, (f) => f.fileName == this.state.focusedFile);
                 index = Math.min(index + this.getPageSize(), this.state.files.length-1);
 
                 this.focusFile(sortedFiles[index].fileName);
             }},
-            { key: KeyCombo.compileCombo("cmd+up"), action: () => {
+            { matcher: keys.matcher("cmd+up"), action: () => {
                 let sortedFiles = this.sortedFiles();
 
                 this.focusFile(this.state.path == "/" ? sortedFiles[0].fileName : "..");
             }},
-            { key: KeyCombo.compileCombo("cmd+down"), action: () => {
+            { matcher: keys.matcher("cmd+down"), action: () => {
                 let sortedFiles = this.sortedFiles();
 
                 this.focusFile(Cols.last(sortedFiles).fileName);
+            }},
+            { matcher: keys.WORD_KEYS, action: (keyStroke) => {
+                quickTypeMatcher.typed(keyStroke.key == "SPACE" ? " " : keyStroke.key);
             }},
         ];
     }

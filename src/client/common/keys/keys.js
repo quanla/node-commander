@@ -2,12 +2,9 @@ var KeyCombo = require("./key-combo.js").KeyCombo;
 var Cols = require("../utils/cols.js").Cols;
 
 function match(keyStroke, keyCombo) {
-    if (keyCombo.key == keyStroke.key
-        && Cols.sameSet(keyCombo.mods, keyStroke.mods)
-    ) {
-        return true;
-    }
-    return false;
+    return !!(keyCombo.key == keyStroke.key
+        && Cols.sameSet(keyCombo.mods, keyStroke.mods));
+
 }
 
 const htmlKeysMap = {
@@ -22,7 +19,23 @@ const htmlKeysMap = {
     117: "F6",
     118: "F7",
     46: "DELETE",
+    32: "SPACE",
 };
+
+let ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let D = "0123456789";
+function translateKeyCode(keyCode) {
+    let a = htmlKeysMap[keyCode];
+    if (a) {
+        return a;
+    }
+    if (keyCode >= 65 && keyCode < 65+26) {
+        return ABC[keyCode-65];
+    }
+    if (keyCode >= 48 && keyCode < 48+10) {
+        return D[keyCode-48];
+    }
+}
 
 const htmlKeys = {
 
@@ -41,28 +54,36 @@ const htmlKeys = {
             mods.push("SHIFT");
         }
         return {
-            key: htmlKeysMap[e.keyCode],
+            key: translateKeyCode(e.keyCode),
             mods,
         };
     }
 };
 exports.htmlKeys = htmlKeys;
 
-const keys = {
-    BACKSPACE: KeyCombo.compileCombo("BACKSPACE"),
-    UP: KeyCombo.compileCombo("UP"),
-    DOWN: KeyCombo.compileCombo("DOWN"),
-    ENTER: KeyCombo.compileCombo("ENTER"),
-    TAB: KeyCombo.compileCombo("TAB"),
-    PAGE_DOWN: KeyCombo.compileCombo("PAGE_DOWN"),
-    PAGE_UP: KeyCombo.compileCombo("PAGE_UP"),
-    F5: KeyCombo.compileCombo("F5"),
-    F6: KeyCombo.compileCombo("F6"),
-    F7: KeyCombo.compileCombo("F7"),
+function matcher(key) {
+    let keyCombo = KeyCombo.compileCombo(key);
+    return (keyStroke) => match(keyStroke, keyCombo);
+}
 
-    DELETE: KeyCombo.compileCombo("DELETE"),
+const keys = {
+    BACKSPACE: matcher("BACKSPACE"),
+    UP: matcher("UP"),
+    DOWN: matcher("DOWN"),
+    ENTER: matcher("ENTER"),
+    TAB: matcher("TAB"),
+    PAGE_DOWN: matcher("PAGE_DOWN"),
+    PAGE_UP: matcher("PAGE_UP"),
+    F5: matcher("F5"),
+    F6: matcher("F6"),
+    F7: matcher("F7"),
+
+    DELETE: matcher("DELETE"),
+
+    WORD_KEYS: (keyStroke) => (keyStroke.key == "SPACE" || ABC.indexOf(keyStroke.key) > -1 || D.indexOf(keyStroke.key) > -1) && keyStroke.mods.length == 0,
 
     match,
+    matcher,
 };
 
 exports.keys = keys;
