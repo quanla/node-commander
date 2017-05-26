@@ -8,6 +8,9 @@ const bookmarkService = {
     addBookmark(bookmark) {
         bookmarks.push(bookmark);
         storage.set("list", bookmarks);
+    },
+    getBookmarks() {
+        return bookmarks;
     }
 };
 

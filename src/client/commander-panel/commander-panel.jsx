@@ -5,6 +5,7 @@ import {Cols} from "../common/utils/cols";
 import {keys} from "../common/keys/keys";
 import {KeyCombo} from "../common/keys/key-combo";
 import {QuickTypeMatcher} from "./quick-type-matcher";
+import {BookmarksShowCmd} from "../commands/bookmarks-show";
 const Path = require("path");
 
 export class CommanderPanel extends GmComponent {
@@ -102,7 +103,18 @@ export class CommanderPanel extends GmComponent {
             { matcher: keys.WORD_KEYS, action: (keyStroke) => {
                 quickTypeMatcher.typed(keyStroke.key == "SPACE" ? " " : keyStroke.key);
             }},
+            { matcher: keys.matcher("cmd+d"), action: () => {
+                this.showBookmarks();
+            }},
         ];
+    }
+
+    showBookmarks() {
+        BookmarksShowCmd.showBookmarks({
+            onChangeDir: (path) => {
+                this.changeFolder(path);
+            }
+        });
     }
 
     changePath(path) {
