@@ -50,6 +50,9 @@ export class CommanderPanel extends GmComponent {
             { matcher: keys.RIGHT, action: () => {
                 this.props.onFocusCmdBox();
             }},
+            { matcher: keys.matcher("shift+cmd+down"), action: () => {
+                this.props.onFocusCmdBox();
+            }},
             { matcher: keys.DOWN, action: () => {
                 const {focusedFile} = this.state;
 
@@ -67,7 +70,7 @@ export class CommanderPanel extends GmComponent {
                 }
             }},
             { matcher: keys.matcher("shift+cmd+enter"), action: () => {
-                this.props.actions.setCmd(`${this.state.path}/${this.state.focusedFile}`);
+                this.props.actions.setCmd(Path.join(this.state.path, this.state.focusedFile));
             }},
             { matcher: keys.ENTER, action: () => {
                 if (this.state.focusedFile == "..") {

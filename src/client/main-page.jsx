@@ -50,6 +50,10 @@ export class MainPage extends GmComponent {
                     }
                 });
             }},
+            {matcher: keys.ESC, action: () => {
+                this.cmdBox.setCmd("");
+                this.focusPanels();
+            }},
 
         ];
     }

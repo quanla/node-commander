@@ -26,6 +26,7 @@ export class CmdBox extends GmComponent {
                 if (value.startsWith("cd ")) {
                     this.props.onChangePath(value.substring(3));
                     blur();
+                    this.setState({value: ""});
                 }
             }},
             // {matcher: keys.BACKSPACE, action: () => {
@@ -41,6 +42,10 @@ export class CmdBox extends GmComponent {
         let input = ReactDOM.findDOMNode(this).querySelector("input");
         input.focus();
         input.select();
+    }
+
+    getValue() {
+        return this.state.value;
     }
 
     render() {

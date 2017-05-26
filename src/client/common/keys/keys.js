@@ -22,6 +22,7 @@ const htmlKeysMap = {
     32: "SPACE",
     37: "LEFT",
     39: "RIGHT",
+    27: "ESC",
 };
 
 let ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -81,6 +82,7 @@ const keys = {
     F5: matcher("F5"),
     F6: matcher("F6"),
     F7: matcher("F7"),
+    ESC: matcher("ESC"),
 
     DELETE: matcher("DELETE"),
 
