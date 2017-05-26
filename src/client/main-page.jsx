@@ -6,6 +6,7 @@ import {htmlKeys, keys} from "./common/keys/keys";
 import {Storage} from "./common/storage";
 import {CopyCmd} from "./commands/copy";
 import {DeleteCmd} from "./commands/delete";
+import {MakeDirCmd} from "./commands/make-dir";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -37,8 +38,16 @@ export class MainPage extends GmComponent {
             {key: keys.DELETE, action: () => {
                 let fromPanel = this.state.focusedPanel;
                 let currentFile = fromPanel.getCurrentFile();
-                DeleteCmd.del(`${fromPanel.getCurrentDir()}/${currentFile.fileName}`).then(() => {
+                DeleteCmd.del(currentFile, fromPanel.getCurrentDir()).then(() => {
                     this.sync();
+                });
+            }},
+            {key: keys.F7, action: () => {
+                let fromPanel = this.state.focusedPanel;
+                MakeDirCmd.makeDir(fromPanel.getCurrentDir()).then((path) => {
+                    if (path) {
+                        fromPanel.changeFolder(path);
+                    }
                 });
             }},
 

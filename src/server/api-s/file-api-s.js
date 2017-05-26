@@ -2,6 +2,7 @@ const fs = require("fs");
 const open = require("open");
 const {ncp} = require("ncp");
 const path = require("path");
+const rimraf = require("rimraf");
 
 function getStats(path) {
     return new Promise((resolve, reject) => {
@@ -64,11 +65,35 @@ exports.fileApiS = (router) => {
         });
     });
 
-    router.post("/file/del", (req, res) => {
-        let {path} = req.body;
-
-        fs.unlink(path, () => {
+    router.post("/file/del_file", (req, res) => {
+        let {name, fromDir} = req.body;
+        fs.unlink(path.join(fromDir, name), () => {
             res.end();
         });
+    });
+    router.post("/file/del_dir", (req, res) => {
+        let {name, fromDir} = req.body;
+        rimraf(path.join(fromDir, name), () => {
+            res.end();
+        });
+    });
+
+    router.post("/file/make_dir", (req, res) => {
+        let {path, fromDir} = req.body;
+
+        function makeDir(name, inDir) {
+            return new Promise((resolve, reject) => {
+                fs.mkdir(`${inDir}/${name}`, () => {
+                    resolve(`${inDir}/${name}`);
+                });
+            });
+        }
+
+        let promise = Promise.resolve(fromDir);
+        path.split("/").forEach((name) => {
+            promise.then((path) => makeDir(name, path))
+        });
+
+        promise.then((path) => res.json(path));
     });
 };

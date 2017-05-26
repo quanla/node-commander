@@ -1,0 +1,61 @@
+//TODO: temporarily change modal-1 to prevent conflict with editor
+.modal-1 {
+  .modal-overlay {
+    position fixed
+    width 100%
+    height 100%
+    top 0
+    left 0
+    background rgba(black, 30%)
+    overflow-y auto
+    z-index 20
+  }
+
+  .modal-box {
+    position relative;
+
+    background white
+
+    @media (min-width 640px) {
+      margin 95px auto 0 auto;
+      border 1px solid grey
+      border-radius 3px
+      width calc(100% - 200px)
+    }
+
+    .btn-close {
+      padding-left 10px;
+      color color-green;
+      font-size 13px;
+      padding-top 14px;
+      .material-icons {
+        font-size 13px;
+      }
+
+      .close-x {
+        display none;
+      }
+
+      @media (min-width 640px) {
+        position absolute
+        top: 19px;
+        right: 18px;
+        font-size: 25px;
+        padding: 2px 10px;
+        cursor pointer;
+
+        .close-x {
+          display block;
+          color black;
+          &:hover {
+            color red;
+          }
+        }
+
+        .close-text-cancel {
+          display none;
+        }
+      }
+    }
+  }
+}

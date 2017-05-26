@@ -1,4 +1,5 @@
 import {MainPage} from "./main-page";
+import {ModalsRegistry} from "./common/components/modal/modals";
 // import {keys} from "../common/keys/keys";
 // import {devActions} from "../common/dev-mode/dev-actions";
 // import {ModalsRegistry} from "../common/components/modal/modals";
@@ -17,6 +18,7 @@ ReactDOM.render(
     (
         <div className="node-commander">
             <MainPage/>
+            <ModalsRegistry/>
         </div>
     ),
     document.getElementById("app-container")
