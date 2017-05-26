@@ -7,7 +7,7 @@ const rimraf = require("rimraf");
 function getStats(path) {
     return new Promise((resolve, reject) => {
         fs.lstat(path, (err, stats) => {
-            resolve({directory: stats.isDirectory()});
+            resolve(Object.assign({directory: stats.isDirectory()}, stats));
         });
     });
 }
@@ -17,7 +17,6 @@ exports.fileApiS = (router) => {
         let path = req.body.path;
         fs.readdir(path, (err, files) => {
             if (err) {
-                console.log(err);
                 res.end();
                 return;
             }
