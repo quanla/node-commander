@@ -40,10 +40,14 @@
   }
 
   &.focused {
-    //border-color blue;
     & > .files > .file.focused {
       background blue;
       color white;
+    }
+  }
+  &:not(.focused) {
+    & > .files > .file.focused {
+      background #cfdaf2;
     }
   }
 }

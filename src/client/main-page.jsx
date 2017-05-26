@@ -20,6 +20,7 @@ export class MainPage extends GmComponent {
 
         this.onMount(() => {
             this.setState({focusedPanel: this.panels["left"]});
+            ReactDOM.findDOMNode(this).focus();
         });
 
         this.panels = {left: null, right: null};
