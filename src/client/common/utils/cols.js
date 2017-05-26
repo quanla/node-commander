@@ -1,4 +1,26 @@
 
+function sortBy(valF) {
+    if (typeof valF == "function") {
+        return (o1, o2) => {
+            return valF(o1) > valF(o2) ? 1 : -1;
+        };
+    } else {
+        let list = valF;
+
+        return (o1, o2) => {
+            for (let i = 0; i < list.length; i++) {
+                let valF = list[i];
+                let v1 = valF(o1);
+                let v2 = valF(o2);
+                if (v1 != v2) {
+                    return v1 > v2 ? 1 : -1;
+                }
+            }
+            return 0;
+        };
+    }
+}
+
 const Cols = {
     indexOf(col, fn) {
         for (let i = 0; i < col.length; i++) {
@@ -44,27 +66,12 @@ const Cols = {
             }
         }
     },
-    sortBy(valF) {
-        if (typeof valF == "function") {
-            return (o1, o2) => {
-                return valF(o1) > valF(o2) ? 1 : -1;
-            };
-        } else {
-            let list = valF;
-
-            return (o1, o2) => {
-                for (let i = 0; i < list.length; i++) {
-                    let valF = list[i];
-                    let v1 = valF(o1);
-                    let v2 = valF(o2);
-                    if (v1 != v2) {
-                        return v1 > v2 ? 1 : -1;
-                    }
-                }
-                return 0;
-            };
-        }
+    sort(col, by) {
+        let clone = col.slice(0);
+        clone.sort(by === undefined ? undefined : sortBy(by));
+        return clone;
     },
+    sortBy,
     find(col, fn) {
         for (let i = 0; i < col.length; i++) {
             let e = col[i];

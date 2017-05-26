@@ -31,6 +31,13 @@ exports.fileApiS = (router) => {
         open(path);
     });
 
+    router.post("/file/get_stats", (req, res) => {
+        let path = req.body.path;
+        getStats(path).then((stats) => {
+            res.json(stats);
+        });
+    });
+
     router.post("/file/get_home_dir", (req, res) => {
         res.json(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']);
     });

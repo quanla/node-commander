@@ -24,4 +24,7 @@ export const fileApi = {
     makeDir(path, fromDir) {
         return api.post("/file/make_dir", {path, fromDir});
     },
+    getStats(path) {
+        return api.post("/file/get_stats", {path});
+    },
 };

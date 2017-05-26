@@ -20,6 +20,8 @@ const htmlKeysMap = {
     118: "F7",
     46: "DELETE",
     32: "SPACE",
+    37: "LEFT",
+    39: "RIGHT",
 };
 
 let ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -70,6 +72,8 @@ const keys = {
     BACKSPACE: matcher("BACKSPACE"),
     UP: matcher("UP"),
     DOWN: matcher("DOWN"),
+    LEFT: matcher("LEFT"),
+    RIGHT: matcher("RIGHT"),
     ENTER: matcher("ENTER"),
     TAB: matcher("TAB"),
     PAGE_DOWN: matcher("PAGE_DOWN"),

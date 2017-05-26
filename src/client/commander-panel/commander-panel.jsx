@@ -5,6 +5,7 @@ import {Cols} from "../common/utils/cols";
 import {keys} from "../common/keys/keys";
 import {KeyCombo} from "../common/keys/key-combo";
 import {QuickTypeMatcher} from "./quick-type-matcher";
+const Path = require("path");
 
 export class CommanderPanel extends GmComponent {
     constructor(props, context) {
@@ -32,7 +33,9 @@ export class CommanderPanel extends GmComponent {
                 this.goUpFolder()
             }},
             { matcher: keys.UP, action: () => {
-                const {files, focusedFile, path} = this.state;
+                const {focusedFile, path} = this.state;
+
+                let files = this.sortedFiles();
 
                 let index = Cols.indexOf(files, (f) => f.fileName == focusedFile);
                 if (index > 0) {
@@ -41,8 +44,16 @@ export class CommanderPanel extends GmComponent {
                     this.focusFile("..");
                 }
             }},
+            { matcher: keys.LEFT, action: () => {
+                this.props.onFocusCmdBox();
+            }},
+            { matcher: keys.RIGHT, action: () => {
+                this.props.onFocusCmdBox();
+            }},
             { matcher: keys.DOWN, action: () => {
-                const {files, focusedFile} = this.state;
+                const {focusedFile} = this.state;
+
+                let files = this.sortedFiles();
 
                 if (focusedFile == "..") {
                     if (files.length) {
@@ -89,6 +100,16 @@ export class CommanderPanel extends GmComponent {
                 quickTypeMatcher.typed(keyStroke.key == "SPACE" ? " " : keyStroke.key);
             }},
         ];
+    }
+
+    changePath(path) {
+        fileApi.getStats(path).then((stats) => {
+            if (stats.directory) {
+                this.changeFolder(path);
+            } else {
+                this.changeFolder(Path.dirname(path), Path.basename(path));
+            }
+        });
     }
 
     getCurrentDir() {
@@ -152,10 +173,9 @@ export class CommanderPanel extends GmComponent {
     }
 
     goUpFolder() {
-        let regExp = new RegExp("\\/([^/]+)$");
-        let currentFolder = regExp.exec(this.state.path)[1];
-        let newPath = this.state.path.replace(regExp, "");
-        this.changeFolder(newPath.length == 0 ? "/" : newPath, currentFolder);
+        let currentFolder = Path.basename(this.state.path);
+        let newPath = Path.dirname(this.state.path);
+        this.changeFolder(newPath, currentFolder);
     }
 
     changeFolder(path, focused) {
@@ -173,7 +193,7 @@ export class CommanderPanel extends GmComponent {
     }
 
     sortedFiles() {
-        return this.state.files;
+        return Cols.sort(this.state.files, [(f) => f.directory ? 0 : 1, (f) => f.fileName.toLowerCase()]);
     }
 
     getInitDir() {

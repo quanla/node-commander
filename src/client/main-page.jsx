@@ -108,6 +108,9 @@ export class MainPage extends GmComponent {
 
     setCmd(cmd) {
         this.cmdBox.setCmd(cmd);
+    }
+
+    focusCmdBox() {
         this.cmdBox.focus();
         this.setState({focusing: "cmdBox"});
     }
@@ -127,6 +130,7 @@ export class MainPage extends GmComponent {
                     ref={(panel)=> this.panels[id] = panel}
                     focused={focusedPanel == this.panels[id]}
                     onMouseDown={() => this.setState({focusedPanel: this.panels[id]})}
+                    onFocusCmdBox={() => this.focusCmdBox()}
                     storage={Storage.createStorage(`panels.${id}`)}
                     actions={{
                         setCmd: (cmd) => {
@@ -135,7 +139,7 @@ export class MainPage extends GmComponent {
                     }}
                 />
             );
-        }
+        };
         return (
             <div className="main-page" tabIndex={0}
                  onKeyDown={(e) => this.handleKeyDown(e)}
@@ -147,6 +151,8 @@ export class MainPage extends GmComponent {
 
                 <CmdBox ref={(comp) => this.cmdBox = comp}
                         onRequestBlur={() => this.focusPanels()}
+                        onRequestFocus={() => this.focusCmdBox()}
+                        onChangePath={(path) => this.state.focusedPanel.changePath(path)}
                 />
             </div>
         );

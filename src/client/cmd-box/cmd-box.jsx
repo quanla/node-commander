@@ -10,14 +10,26 @@ export class CmdBox extends GmComponent {
             value: "",
         };
 
+        let blur = () => {
+
+            let input = ReactDOM.findDOMNode(this).querySelector("input");
+            input.blur();
+
+            this.props.onRequestBlur();
+        };
         this.keyHandlers = [
-            {key: keys.UP, action: () => {
+            {matcher: keys.UP  , action: blur},
+            {matcher: keys.DOWN, action: blur},
+            {matcher: keys.ENTER, action: () => {
+                const {value} = this.state;
 
-                let input = ReactDOM.findDOMNode(this).querySelector("input");
-                input.blur();
-
-                this.props.onRequestBlur();
-            }}
+                if (value.startsWith("cd ")) {
+                    this.props.onChangePath(value.substring(3));
+                    blur();
+                }
+            }},
+            // {matcher: keys.BACKSPACE, action: () => {
+            // }},
         ];
     }
 
@@ -35,7 +47,7 @@ export class CmdBox extends GmComponent {
         const {value} = this.state;
 
         return (
-            <div className="cmd-box">
+            <div className="cmd-box" onClick={(e) => {e.preventDefault(); this.props.onRequestFocus(); }}>
                 <input value={value} onChange={(e) => this.setState({value: e.target.value})}/>
             </div>
         );
