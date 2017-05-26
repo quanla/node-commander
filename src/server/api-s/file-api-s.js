@@ -63,4 +63,12 @@ exports.fileApiS = (router) => {
             res.json({success: true});
         });
     });
+
+    router.post("/file/del", (req, res) => {
+        let {path} = req.body;
+
+        fs.unlink(path, () => {
+            res.end();
+        });
+    });
 };

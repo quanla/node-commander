@@ -5,6 +5,7 @@ import {CmdBox} from "./cmd-box/cmd-box";
 import {htmlKeys, keys} from "./common/keys/keys";
 import {Storage} from "./common/storage";
 import {CopyCmd} from "./commands/copy";
+import {DeleteCmd} from "./commands/delete";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -27,14 +28,30 @@ export class MainPage extends GmComponent {
             }},
             {key: keys.F5, action: () => {
                 let fromPanel = this.state.focusedPanel;
-                let toPanel = this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"];
+                let toPanel = this.getUnfocusedPanel();
                 let currentFile = fromPanel.getCurrentFile();
                 CopyCmd.copy(currentFile, fromPanel.getCurrentDir(), toPanel.getCurrentDir()).then(() => {
-                    toPanel.sync();
+                    this.sync();
+                });
+            }},
+            {key: keys.DELETE, action: () => {
+                let fromPanel = this.state.focusedPanel;
+                let currentFile = fromPanel.getCurrentFile();
+                DeleteCmd.del(`${fromPanel.getCurrentDir()}/${currentFile.fileName}`).then(() => {
+                    this.sync();
                 });
             }},
 
         ];
+    }
+
+    getUnfocusedPanel() {
+        return this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"];
+    }
+
+    sync() {
+        this.panels["left"].sync();
+        this.panels["right"].sync();
     }
 
     handleKeyDown(e) {

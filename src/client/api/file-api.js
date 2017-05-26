@@ -15,4 +15,7 @@ export const fileApi = {
     copyDir(dir, destDir) {
         return api.post("/file/copy_dir", {dir, destDir});
     },
+    del(path) {
+        return api.post("/file/del", {path});
+    },
 };
