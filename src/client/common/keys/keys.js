@@ -18,6 +18,8 @@ const htmlKeysMap = {
     9: "TAB",
     34: "PAGE_DOWN",
     33: "PAGE_UP",
+    116: "F5",
+    117: "F6",
 };
 
 const htmlKeys = {
@@ -52,6 +54,8 @@ const keys = {
     TAB: KeyCombo.compileCombo("TAB"),
     PAGE_DOWN: KeyCombo.compileCombo("PAGE_DOWN"),
     PAGE_UP: KeyCombo.compileCombo("PAGE_UP"),
+    F5: KeyCombo.compileCombo("F5"),
+    F6: KeyCombo.compileCombo("F6"),
 
     match,
 };

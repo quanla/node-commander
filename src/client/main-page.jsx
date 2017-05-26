@@ -4,6 +4,7 @@ import {CommanderPanel} from "./commander-panel/commander-panel";
 import {CmdBox} from "./cmd-box/cmd-box";
 import {htmlKeys, keys} from "./common/keys/keys";
 import {Storage} from "./common/storage";
+import {CopyCmd} from "./commands/copy";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -23,7 +24,16 @@ export class MainPage extends GmComponent {
         this.keyHandlers = [
             {key: keys.TAB, action: () => {
                 this.setState({focusedPanel: this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"]});
-            }}
+            }},
+            {key: keys.F5, action: () => {
+                let fromPanel = this.state.focusedPanel;
+                let toPanel = this.state.focusedPanel == this.panels["left"] ? this.panels["right"] : this.panels["left"];
+                let currentFile = fromPanel.getCurrentFile();
+                CopyCmd.copy(currentFile, fromPanel.getCurrentDir(), toPanel.getCurrentDir()).then(() => {
+                    toPanel.sync();
+                });
+            }},
+
         ];
     }
 

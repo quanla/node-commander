@@ -53,8 +53,7 @@ export class CommanderPanel extends GmComponent {
                     this.goUpFolder();
                     return;
                 }
-                let file = Cols.find(this.sortedFiles(), (f) => f.fileName == this.state.focusedFile);
-                this.exec(file);
+                this.exec(this.getCurrentFile());
             }},
             { key: keys.PAGE_UP, action: () => {
                 this.pageUp();
@@ -77,6 +76,19 @@ export class CommanderPanel extends GmComponent {
                 this.focusFile(Cols.last(sortedFiles).fileName);
             }},
         ];
+    }
+
+    getCurrentDir() {
+        return this.state.path;
+    }
+    getCurrentFile() {
+        return Cols.find(this.state.files, (f) => f.fileName == this.state.focusedFile);
+    }
+
+    sync() {
+        fileApi.getFiles(this.state.path).then((files) => {
+            this.setState({files});
+        });
     }
 
     getPageSize() {

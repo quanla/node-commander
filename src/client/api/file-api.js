@@ -9,4 +9,10 @@ export const fileApi = {
     getHomeDir() {
         return api.post("/file/get_home_dir", {});
     },
+    copyFile(file, destDir) {
+        return api.post("/file/copy_file", {file, destDir});
+    },
+    copyDir(dir, destDir) {
+        return api.post("/file/copy_dir", {dir, destDir});
+    },
 };
