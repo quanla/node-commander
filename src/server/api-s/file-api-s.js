@@ -9,7 +9,7 @@ function getStats(path) {
     });
 }
 
-exports.apiHub = (router) => {
+exports.fileApiS = (router) => {
     router.post("/file/list", (req, res) => {
         let path = req.body.path;
         fs.readdir(path, (err, files) => {
@@ -27,5 +27,9 @@ exports.apiHub = (router) => {
     router.post("/file/open", (req, res) => {
         let path = req.body.path;
         open(path);
+    });
+
+    router.post("/file/get_home_dir", (req, res) => {
+        res.json(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']);
     });
 };

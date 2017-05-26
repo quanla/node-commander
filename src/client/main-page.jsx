@@ -3,6 +3,7 @@ import {GmComponent} from "./common/gm-component";
 import {CommanderPanel} from "./commander-panel/commander-panel";
 import {CmdBox} from "./cmd-box/cmd-box";
 import {htmlKeys, keys} from "./common/keys/keys";
+import {Storage} from "./common/storage";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -80,6 +81,7 @@ export class MainPage extends GmComponent {
     }
 
     render() {
+
         const {focusedPanel} = this.state;
 
         const createCommanderPanel = (id) => {
@@ -88,6 +90,7 @@ export class MainPage extends GmComponent {
                     ref={(panel)=> this.panels[id] = panel}
                     focused={focusedPanel == this.panels[id]}
                     onMouseDown={() => this.setState({focusedPanel: this.panels[id]})}
+                    storage={Storage.createStorage(`panels.${id}`)}
                     actions={{
                         setCmd: (cmd) => {
                             this.setCmd(cmd);

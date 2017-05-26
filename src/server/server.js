@@ -1,7 +1,7 @@
 const express = require("express");
 const open = require("open");
 const bodyParser = require("body-parser");
-const {apiHub} = require("./api-hub/api-hub");
+const {apiHub} = require("./api-s/api-hub");
 
 var app = express();
 

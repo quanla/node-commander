@@ -6,4 +6,7 @@ export const fileApi = {
     openFile(path) {
         return api.post("/file/open", {path});
     },
+    getHomeDir() {
+        return api.post("/file/get_home_dir", {});
+    },
 };

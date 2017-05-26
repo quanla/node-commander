@@ -15,7 +15,7 @@ export class CommanderPanel extends GmComponent {
             focusedFile: null,
         };
 
-        setTimeout(() => this.changeFolder("/Users/quanle/Downloads"));
+        this.getInitDir().then((dir) => this.changeFolder(dir));
 
         this.keyHandlers = [
             { key: keys.BACKSPACE, action: () => {
@@ -136,6 +136,7 @@ export class CommanderPanel extends GmComponent {
     changeFolder(path, focused) {
         this.setState({path, files: null, focusedFile: null});
         fileApi.getFiles(path).then((files) => {
+            this.props.storage.set("dir", path);
             this.setState({files, focusedFile: focused || (path != "/" ? ".." : files[0].fileName)});
         });
     }
@@ -146,6 +147,15 @@ export class CommanderPanel extends GmComponent {
 
     sortedFiles() {
         return this.state.files;
+    }
+
+    getInitDir() {
+        let dir = this.props.storage.get("dir");
+        if (dir == null) {
+            return fileApi.getHomeDir();
+        } else {
+            return Promise.resolve(dir);
+        }
     }
 
     render() {
