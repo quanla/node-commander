@@ -7,6 +7,7 @@ import {Storage} from "./common/storage";
 import {CopyCmd} from "./commands/copy";
 import {DeleteCmd} from "./commands/delete";
 import {MakeDirCmd} from "./commands/make-dir";
+import {BookmarksAddCmd} from "./commands/bookmarks-add";
 
 export class MainPage extends GmComponent {
     constructor(props, context) {
@@ -55,7 +56,25 @@ export class MainPage extends GmComponent {
                 this.focusPanels();
             }},
 
+            {matcher: keys.matcher("cmd+left"), action: () => {
+                this.copyPanelFocus("right", "left");
+            }},
+            {matcher: keys.matcher("cmd+right"), action: () => {
+                this.copyPanelFocus("left", "right");
+            }},
+            {matcher: keys.matcher("cmd+shift+d"), action: () => {
+                BookmarksAddCmd.showBookmarksAddDialog(this.state.focusedPanel.getCurrentDir());
+            }},
         ];
+    }
+
+    copyPanelFocus(from, to) {
+        let fromPanel = this.panels[from];
+        let toPanel = this.panels[to];
+
+        let currentFile = fromPanel.getCurrentFile();
+        toPanel.changeFolder(fromPanel.getCurrentDir(), currentFile == null ? null : currentFile.fileName);
+        this.setState({focusedPanel: toPanel});
     }
 
     getUnfocusedPanel() {
